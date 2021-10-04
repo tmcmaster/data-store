@@ -1,16 +1,20 @@
-# Defines a default set of lint rules enforced for projects at Google. For
-# details and rationale, see
-# https://github.com/dart-lang/pedantic#enabled-lints.
+# Defines a default set of lint rules enforced for
+# projects at Google. For details and rationale,
+# see https://github.com/dart-lang/pedantic#enabled-lints.
 
 include: package:pedantic/analysis_options.yaml
+inclide: package:lint/analysis_options.yaml
 
 # For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
-
 # Uncomment to specify additional rules.
 # linter:
 #   rules:
 #     - camel_case_types
 
-# analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+
+analyzer:
+  exclude:
+    - lib/**/*.g.dart
+    - lib/**/*.freezed.dart
+    - lib/modules/first_poc
+    - lib/applications/first_poc.dart
