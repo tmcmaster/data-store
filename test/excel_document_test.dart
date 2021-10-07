@@ -1,4 +1,4 @@
-import 'package:data_store/data_store.dart';
+import 'package:data_store/src/documents/data_document.dart';
 import 'package:test/test.dart';
 
 void main() async {
@@ -7,21 +7,14 @@ void main() async {
   final sheetName = 'sheet';
 
   group('Test Excel Store', () {
-    // setUp(() async {
-    //   await excelDocument.reload();
-    // });
-    test('Test openThen', () async {
-      final names = await DataStore.openExcelThen(inputFile, (document) => document.toMap());
-      print(names);
-    });
     test('Get Sheet Names', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
       final sheetNames = excelDocument.getSheetNames();
       print(sheetNames);
       expect(sheetNames.length, equals(2));
     });
     test('Set Sheet data', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
       final sheetData = [
         ['a', 'b', 'c'],
         ['A', 'B', 'C'],
@@ -30,14 +23,14 @@ void main() async {
       await excelDocument.sheetFromCSV(sheetName, sheetData);
     });
     test('Get Sheet data', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
       final csvData = excelDocument.sheetToCSV(sheetName);
       expect(csvData.length, equals(3));
       expect(csvData[0][0], equals('a'));
       expect(csvData[2][2], equals('3'));
     });
     test('Rename Sheet', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
       final originalName = 'Rename Me';
       final newName = 'Thanks';
       print(excelDocument.getSheetNames());
@@ -47,7 +40,7 @@ void main() async {
       await excelDocument.saveAs(outputFile);
     });
     test('Delete Sheet', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
       final beforeNames = excelDocument.getSheetNames();
       expect(beforeNames.length, equals(2));
       expect(beforeNames[0], 'sheet');
@@ -58,19 +51,19 @@ void main() async {
       expect(afterNames[0], 'Rename Me');
     });
     test('Save as new Document', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel().open(inputFile);
       await excelDocument.saveAs(outputFile);
     });
     test('Document as Map', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
-      final mapData = excelDocument.toMap();
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
+      final mapData = excelDocument.toDataSet();
       expect(mapData, isNotEmpty);
       final tabNames = mapData.keys;
       expect(tabNames.length, equals(2));
       print(mapData);
     });
     test('Document Sheet as List', () async {
-      final excelDocument = await DataStore.openExcel(inputFile);
+      final excelDocument = await DocumentExcel(filePath: inputFile).open();
       final sheetCSV = excelDocument.sheetToCSV('sheet');
       expect(sheetCSV.length, equals(3));
       expect(sheetCSV[0].length, equals(3));
@@ -78,7 +71,7 @@ void main() async {
     });
 
     test('Test addSheet', () async {
-      final document = await DataStore.createExcel();
+      final document = DocumentExcel();
       document
           .addSheet(
               title: 'A',
@@ -117,7 +110,7 @@ void main() async {
           [1, 2, 3]
         ]
       };
-      final document = await DataStore.createExcel();
+      final document = DocumentExcel();
       final sheetOrder = ['A', 'B', 'C'];
 
       document.addSheets(sheetMap: sheetData, clearFirst: true);

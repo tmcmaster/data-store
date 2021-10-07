@@ -1,3 +1,4 @@
 library data_store;
 
-export 'src/data_store.dart';
+export 'src/documents/data_document.dart';
+export 'src/transcoders/transcoder.dart';
